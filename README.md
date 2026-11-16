@@ -1,6 +1,6 @@
 # STM32_Gimbal_Project
 
-1、板子与平台：芯片：STM32F103C8T6，平台：暂时为Keil
+1、板子与平台：芯片：STM32F103C8T6，平台：VS Code和CMake,编程：c语言和HAL库
 
 
 2、硬件与功能：
