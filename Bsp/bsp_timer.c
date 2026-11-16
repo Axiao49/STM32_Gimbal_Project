@@ -1,5 +1,6 @@
 //工程设定时钟计时
 #include "main.h"
+#include "tim.h"
 
 volatile uint32_t currentTick=0;
 

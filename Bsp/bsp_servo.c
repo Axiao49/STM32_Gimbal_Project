@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "tim.h"
 #include "bsp_usart.h"
 #include "bsp_mpu6050.h"
 #include "bsp_button.h"
@@ -33,7 +34,7 @@ void servo_pitch(void)//俯仰
 {
 	if(servo_PitchCmd==1)//判断
 		{
-			_HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_1,Pitch_Angle*2000/180+500);//计算角度占180的比例，再等比例换算成PWM时间，最后加500计数单位满足初始位 
+			__HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_1,Pitch_Angle*2000/180+500);//计算角度占180的比例，再等比例换算成PWM时间，最后加500计数单位满足初始位 
 			servo_PitchCmd=0;//重置标志位
 		}
 		
@@ -43,7 +44,7 @@ void servo_yaw(void)
 {
 	if(servo_YawCmd==1)
 		{
-			_HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_1,Yaw_Angle*2000/180+500); 
+			__HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_1,Yaw_Angle*2000/180+500); 
 			servo_YawCmd=0;
 		}
 		

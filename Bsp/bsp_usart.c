@@ -1,4 +1,5 @@
 #include "main.h"
+#include "usart.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -133,7 +134,7 @@ void My_USART_Word(void)
 	int32_t  angle=0;//记录传入指令的角度，为舵机转向运动做准备
 	int JudgePoint=0;
 	int sscanf_size=0;
-	JudgePoint=sscanf((char *)My_USART_Buffer,"%s %d%n",current_command ,&angle,&sscanf_size);//接收数据,并为判断是否为舵机指令做准备	
+	JudgePoint=sscanf((char *)My_USART_Buffer,"%s %ld%n",current_command ,&angle,&sscanf_size);//接收数据,并为判断是否为舵机指令做准备	
 
 	
 

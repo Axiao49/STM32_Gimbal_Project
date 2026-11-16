@@ -1,4 +1,5 @@
 #include "main.h"
+#include "adc.h"
 
 volatile uint16_t Light_Data[4]={0};//设立数组接收光敏传感器数据
 volatile float LeftUp=0,LeftDown=0,RightUp=0,RightDown=0;//四光敏矩阵模块数据

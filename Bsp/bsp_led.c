@@ -52,7 +52,7 @@ void My_Check2_LED1 (void)
 				{
 					if(currentTick-LED1StartTime>=500)//有故障1Hz闪烁，即完整周期（亮+灭）1s
 						{
-							if(HAL_GPIO_ReadPin(GPIOA,GPIO_Pin_0)==GPIO_PIN_RESET)
+							if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0)==GPIO_PIN_RESET)
 								{
 									HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,GPIO_PIN_SET);
 								}

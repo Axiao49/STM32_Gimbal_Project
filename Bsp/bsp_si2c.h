@@ -1,7 +1,7 @@
 #ifndef _BSP_SI2C_H_
 #define _BSP_SI2C_H_
 
-#include "stm32f10x.h"
+#include "main.h"
 
 void My_scl_write(uint8_t level);
 void My_sda_write(uint8_t level);

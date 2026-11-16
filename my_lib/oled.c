@@ -564,9 +564,9 @@ void OLED_Printf(OLED_TypeDef *OLED, const char *Format, ...)
 	char format_buffer[64];
 	
 	va_list argptr;
-	__va_start(argptr, Format);
+	va_start(argptr, Format);
 	vsprintf(format_buffer, Format, argptr);
-	__va_end(argptr);
+	va_end(argptr);
 	OLED_DrawString(OLED, format_buffer);
 }
 

@@ -18,15 +18,27 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
-#include "dma.h"
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdio.h"
+#include "delay.h"
+#include "oled.h"
+#include "usart.h"
+#include "adc.h"
+#include "tim.h"
+#include "gpio.h"
 
+#include "bsp_led.h"
+#include "bsp_timer.h"
+#include "bsp_button.h"
+#include "bsp_usart.h"
+#include "bsp_si2c.h"
+#include "bsp_oled.h"
+#include "bsp_servo.h"
+#include "bsp_si2cMPU.h"
+#include "bsp_mpu6050.h"
+#include "bsp_lightSensor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,12 +59,17 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile uint32_t My_oled_StartTime=0;
+volatile uint32_t My_mpu_StartTime=0;
+volatile uint32_t My_lightSensor_StartTime=0;
+volatile uint32_t My_servo_Time=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+
 /* USER CODE BEGIN PFP */
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE END PFP */
 
@@ -90,14 +107,38 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
-  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_UART_Receive_IT(&huart1, &rx_data, 1);
+  My_Timer_Init();
+	
+	uint8_t  resultoled=My_oled_Init();
+	My_servo_Init();
+	My_MPU6050_Init();
+	
+	LightSensor_Init();
+	
+	
+		if(resultoled!=0)
+			{
+				sys_checkpoint=1;
+			}
+			
+		
 
+	HAL_Delay(500);
+	if(MPU6050_AngleCalibration()!=0)
+		{
+			printf ("AUTO CAL ERR\r\n");
+		}
+	else 
+		{
+			printf ("AUTO CAL OK\r\n");
+		}
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,6 +148,48 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    My_Check2_LED1 ();
+		My_button_Press();
+		My_USART_Mode();
+		My_Mode_CheckLED2();
+		My_USART_Word();
+		
+		
+		if(currentTick-My_oled_StartTime>=200)
+			{
+				My_oled_printf();
+				My_oled_StartTime=currentTick ;
+			}
+		
+		if(Calibration_point==1)
+			{
+				Calibration_point=0;
+				
+				if(MPU6050_AngleCalibration()==0)
+					{
+						printf ("OK\r\n");
+					}
+				else
+					{
+						printf ("ERR CAL\r\n");
+						
+					}
+			}
+			
+			
+		if(currentTick-My_mpu_StartTime>=20)
+			{
+				MPU6050_UpdateAngle();//
+				My_mpu_StartTime=currentTick ;
+			}
+			
+			
+			
+		if(currentTick-My_servo_Time>=20)	
+			{
+				Servo_Move();
+				My_servo_Time=currentTick;
+			}
   }
   /* USER CODE END 3 */
 }
@@ -160,6 +243,7 @@ void SystemClock_Config(void)
   */
   HAL_RCC_EnableCSS();
 }
+
 
 /* USER CODE BEGIN 4 */
 

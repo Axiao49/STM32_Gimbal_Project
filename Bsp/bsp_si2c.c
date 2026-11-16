@@ -12,12 +12,12 @@ void My_scl_write(uint8_t level)
 
 	if(level==0)
 		{
-			HAL_GPIO_WritePin(GPIOB, GPIO_Pin_8,GPIO_PIN_RESET);//SCL写低电平
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8,GPIO_PIN_RESET);//SCL写低电平
 		
 		}
 	else
 		{
-			HAL_GPIO_WritePin(GPIOB, GPIO_Pin_8,GPIO_PIN_SET);//SCL写高电平
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8,GPIO_PIN_SET);//SCL写高电平
 		}
 
 
@@ -32,12 +32,12 @@ void My_sda_write(uint8_t level)
 
 	if(level==0)
 		{
-			HAL_GPIO_WritePin(GPIOB,GPIO_Pin_9,GPIO_PIN_RESET);//SDA写低电平
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_RESET);//SDA写低电平
 		
 		}
 	else
 		{
-			HAL_GPIO_WritePin(GPIOB,GPIO_Pin_9,GPIO_PIN_SET);//SDA写高电平
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_9,GPIO_PIN_SET);//SDA写高电平
 		}
 
 
@@ -50,7 +50,7 @@ void My_sda_write(uint8_t level)
 uint8_t My_sda_read(void)
 {
 
-	if(HAL_GPIO_ReadPin(GPIOB,GPIO_Pin_9)==GPIO_PIN_SET)//读取输入引脚的电平
+	if(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_9)==GPIO_PIN_SET)//读取输入引脚的电平
 		{
 			return 1;
 		}

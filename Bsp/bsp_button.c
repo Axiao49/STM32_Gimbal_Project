@@ -19,7 +19,7 @@ volatile uint8_t My_button_State=0;//OLED显示按键类型判断点
 void My_button_Press(void)
 {
 
-	My_button_Current=HAL_GPIO_ReadPin(GPIOB,GPIO_Pin_0);
+	My_button_Current=HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0);
 	
 	if(My_button_Current==GPIO_PIN_RESET&&My_button_Previous==GPIO_PIN_SET)//判断按钮是否被按下
 		{
