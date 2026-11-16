@@ -1,9 +1,8 @@
 #ifndef _BSP_LED_H_
 #define _BSP_LED_H_
 
-#include "stm32f10x.h"
+#include "main.h"
 
-void My_LED_Init(void);//LED初始化
 void My_Check_LED (void);//上电自检
 void My_Check2_LED1 (void);//LED1自检
 extern volatile uint8_t sys_checkpoint;//外设检查点

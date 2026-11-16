@@ -1,4 +1,4 @@
-#include "stm32f10x.h"
+#include "main.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -15,77 +15,16 @@ uint8_t DataOR_Check=0;
 int32_t temp_Pitch=90;//显示舵机运动角度
 int32_t temp_Yaw=90;		
 
+uint8_t rx_data=0;
 
-
-void My_USART_Init(void)
-{
-//初始化USART1串口
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
-	
-	USART_InitTypeDef USART_InitStruct;
-	
-	
-	USART_InitStruct.USART_BaudRate=115200;
-	USART_InitStruct.USART_Mode = USART_Mode_Tx|USART_Mode_Rx ;//波特率
-	USART_InitStruct.USART_WordLength = USART_WordLength_8b ;//8位数据位
-	USART_InitStruct.USART_Parity = USART_Parity_No ;//无校验
-	USART_InitStruct.USART_StopBits =USART_StopBits_1 ;//1位停止位
-	
-	
-	USART_Init(USART1,&USART_InitStruct);
-
-//初始化PA9引脚(TX)
-	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
-	
-	GPIO_InitTypeDef GPIO_InitStruct={0};
-	
-	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_AF_PP;//复用推挽
-	GPIO_InitStruct.GPIO_Pin =GPIO_Pin_9;
-	GPIO_InitStruct.GPIO_Speed=GPIO_Speed_10MHz;
-	
-	GPIO_Init(GPIOA,&GPIO_InitStruct);
-	
-//初始化PA10引脚(RX)
-	
-	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;//输入上拉
-	GPIO_InitStruct.GPIO_Pin =GPIO_Pin_10;
-	
-	GPIO_Init(GPIOA,&GPIO_InitStruct);
-	
-	
-	
-	
-	
-//配置中断
-	USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);
-	
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-
-//配置NVIC模块参数	
-	NVIC_InitTypeDef NVIC_InitStruct={0};
-	
-	NVIC_InitStruct.NVIC_IRQChannel =USART1_IRQn;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority =0;//抢占优先级
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority =0;//子占优先级
-	NVIC_InitStruct.NVIC_IRQChannelCmd =ENABLE ;//使能中断通道
-	
-	
-	NVIC_Init(&NVIC_InitStruct);
-	USART_Cmd(USART1,ENABLE);
-}
-
-
-
-
-void USART1_IRQHandler(void)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 
-	if(USART_GetFlagStatus(USART1,USART_FLAG_RXNE)==SET)//判断是否可读取数据
+	
+	if(huart->Instance==USART1)//判断是否可读取数据
 		{
-			uint8_t ch=USART_ReceiveData(USART1);//
-			USART_ClearFlag(USART1,USART_FLAG_RXNE);//清除标志位，为读取下一个数据作准备
-
+			uint8_t ch=rx_data;//
+			
 			
 			if(ch!='\n'&&ch!='\r')//判断是否为结束标志
 				{
@@ -110,7 +49,7 @@ void USART1_IRQHandler(void)
 						}
 					
 				}
-			
+				HAL_UART_Receive_IT(&huart1, &rx_data, 1);
 		}	
 
 }
@@ -120,17 +59,11 @@ void USART1_IRQHandler(void)
 void My_USART_SendBytes(USART_TypeDef *USARTx,uint8_t *pData,uint16_t Size)
 {
 
-	for(uint32_t i=0;i<Size;i++)
-		{
-			while(USART_GetFlagStatus(USARTx,USART_FLAG_TXE)==RESET);//等待发送数据寄存器为空
-			
-			USART_SendData(USARTx,pData[i]);
-		
-		}
+	if(USARTx==USART1)
+	{
+		HAL_UART_Transmit(&huart1,pData,Size,HAL_MAX_DELAY);
 
-		while(USART_GetFlagStatus(USARTx,USART_FLAG_TC)==RESET);//等待发送数据寄存器和移位寄存器为空
-
-
+	}
 
 }
 
@@ -145,14 +78,11 @@ void My_USART1_SendByte(USART_TypeDef *USARTx,uint8_t Data)
 
 
 //重定向printf ->可发送字符（发送的字符）
-int fputc(int ch,FILE *f)
+int _write(int file,char *ptr,int len)
 {
 
-	while(USART_GetFlagStatus(USART1,USART_FLAG_TXE)==RESET);//等待发送寄存器为空
-
-	USART_SendData(USART1,(uint8_t)ch);//写入发送寄存器中
-	
-	return ch;
+    HAL_UART_Transmit(&huart1,(uint8_t*)ptr,len,HAL_MAX_DELAY);	
+	return len;
 
 
 }
@@ -177,8 +107,8 @@ void My_USART_Word(void)
 	if(DataOR_Check==1)
 		{
 			printf ("ERR\r\n");
-//			My_USART_DataREC=0;//标志位置0
-//			DataOR_Check=0;
+			My_USART_DataREC=0;//标志位置0
+			DataOR_Check=0;
 			return;
 		}
 		

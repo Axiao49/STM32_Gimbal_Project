@@ -1,24 +1,10 @@
-#include "stm32f10x.h"
+#include "main.h"
 #include "jka_MPU6050.h"
 #include "Delay.h"
 #include "bsp_oled.h"
 #include "bsp_led.h"
 
-uint8_t  My_si2cMPU_Init(void)
-{
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
-	
-	GPIO_InitTypeDef GPIO_InitStruct={0};
-	
-	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_OD;
-	GPIO_InitStruct.GPIO_Pin =GPIO_Pin_11|GPIO_Pin_10;
-	GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
-	
-	GPIO_Init(GPIOB,&GPIO_InitStruct);
-
-	return 0;
-}
 
 
 
@@ -40,12 +26,12 @@ void My_sclMPU_write(uint8_t level)
 
 	if(level==0)
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_11,Bit_RESET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_11,GPIO_PIN_RESET);
 		
 		}
 	else
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_11,Bit_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_11,GPIO_PIN_SET);
 		}
 
 		DelayUs(2);
@@ -60,12 +46,11 @@ void My_sdaMPU_write(uint8_t level)
 
 	if(level==0)
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_10,Bit_RESET);
-		
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_10,GPIO_PIN_RESET);
 		}
 	else
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_10,Bit_SET);
+			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_10,GPIO_PIN_SET);
 		}
 
 	DelayUs(2);
@@ -78,7 +63,7 @@ void My_sdaMPU_write(uint8_t level)
 //（返回：引脚的电平状态）
 uint8_t My_sdaMPU_read(void)
 {
-	uint8_t Bit=GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_10);
+	uint8_t Bit=HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10);
 	DelayUs(2);
 	
 	return Bit;
@@ -240,7 +225,7 @@ int My_si2cMPU_Send(uint8_t RegAddr,uint8_t Data)
 //读取寄存器里的数据
 //（发送：寄存器的地址）
 //（返回：寄存器里的数据）
-uint8_t  My_si2cMPU_ReReg(uint8_t RegAddr)
+int8_t  My_si2cMPU_ReReg(uint8_t RegAddr)
 {
 	
 	uint8_t Data;

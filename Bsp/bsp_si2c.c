@@ -1,22 +1,8 @@
-#include "stm32f10x.h"
+#include "main.h"
 #include "delay.h"
 
 
-uint8_t  My_si2c_Init(void)
-{
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
-	
-	GPIO_InitTypeDef GPIO_InitStruct={0};
-	
-	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_OD;
-	GPIO_InitStruct.GPIO_Pin =GPIO_Pin_8|GPIO_Pin_9;
-	GPIO_InitStruct.GPIO_Speed=GPIO_Speed_2MHz;
-	
-	GPIO_Init(GPIOB,&GPIO_InitStruct);
-
-	return 0;
-}
 
 //
 //
@@ -26,12 +12,12 @@ void My_scl_write(uint8_t level)
 
 	if(level==0)
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_8,Bit_RESET);//SCL写低电平
+			HAL_GPIO_WritePin(GPIOB, GPIO_Pin_8,GPIO_PIN_RESET);//SCL写低电平
 		
 		}
 	else
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_8,Bit_SET);//SCL写高电平
+			HAL_GPIO_WritePin(GPIOB, GPIO_Pin_8,GPIO_PIN_SET);//SCL写高电平
 		}
 
 
@@ -46,12 +32,12 @@ void My_sda_write(uint8_t level)
 
 	if(level==0)
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_9,Bit_RESET);//SDA写低电平
+			HAL_GPIO_WritePin(GPIOB,GPIO_Pin_9,GPIO_PIN_RESET);//SDA写低电平
 		
 		}
 	else
 		{
-			GPIO_WriteBit(GPIOB,GPIO_Pin_9,Bit_SET);//SDA写高电平
+			HAL_GPIO_WritePin(GPIOB,GPIO_Pin_9,GPIO_PIN_SET);//SDA写高电平
 		}
 
 
@@ -64,7 +50,7 @@ void My_sda_write(uint8_t level)
 uint8_t My_sda_read(void)
 {
 
-	if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_9)==Bit_SET )//读取输入引脚的电平
+	if(HAL_GPIO_ReadPin(GPIOB,GPIO_Pin_9)==GPIO_PIN_SET)//读取输入引脚的电平
 		{
 			return 1;
 		}

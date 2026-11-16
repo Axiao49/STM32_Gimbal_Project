@@ -1,4 +1,4 @@
-#include "stm32f10x.h"
+#include "main.h"
 #include "string.h"
 
 
@@ -34,8 +34,8 @@ uint8_t  My_oled_Init(void)
 
 	int resultoled=OLED_Init(&oled,&OLED_InitStruct);
 	
-//	return resultoled;
-	return 0;
+	return resultoled;
+
 
 }
 

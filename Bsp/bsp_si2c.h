@@ -3,7 +3,6 @@
 
 #include "stm32f10x.h"
 
-uint8_t  My_si2c_Init(void);
 void My_scl_write(uint8_t level);
 void My_sda_write(uint8_t level);
 uint8_t My_sda_read(void);

@@ -1,4 +1,4 @@
-#include "stm32f10x.h"
+#include "main.h"
 #include "math.h"
 #include "delay.h"
 
@@ -87,7 +87,7 @@ uint8_t  MPU6050_AngleCalibration(void)
 			sum_gx +=Gyro_X ;
 			sum_gy+=Gyro_Y ;
 			
-			Delay(2);//防止采样过快
+			HAL_Delay(2);//防止采样过快
 	
 		}
 

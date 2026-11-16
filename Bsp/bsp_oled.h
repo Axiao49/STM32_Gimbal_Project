@@ -1,7 +1,7 @@
 #ifndef _BSP_OLED_H_
 #define _BSP_OLED_H_
 
-#include "stm32f10x.h"
+#include "main.h"
 
 uint8_t  My_oled_Init(void);//初始化
 void My_oled_printf(void);//显示

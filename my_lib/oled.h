@@ -10,7 +10,7 @@
 #ifndef _OLED_H_
 #define _OLED_H_
 
-#include "stm32f10x.h"
+#include "main.h"
 #include "oled_font.h"
 
 #define OLED_SLAVE_ADDR 0x78

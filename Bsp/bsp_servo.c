@@ -1,5 +1,5 @@
 
-#include "stm32f10x.h"
+#include "main.h"
 #include "bsp_usart.h"
 #include "bsp_mpu6050.h"
 #include "bsp_button.h"
@@ -22,61 +22,8 @@ volatile uint8_t last_Mode=1;//切回模式1回归中位判断点
 void My_servo_Init(void)
 {
 
-	//初始化引脚PB6 PB7
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
-	
-	GPIO_InitTypeDef GPIO_InitStruct={0};
-	
-	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_AF_PP;//
-	GPIO_InitStruct.GPIO_Pin =GPIO_Pin_6|GPIO_Pin_7;
-	GPIO_InitStruct.GPIO_Speed=GPIO_Speed_50MHz;//
-	
-	GPIO_Init(GPIOB,&GPIO_InitStruct);
-	
-	
-	
-	//开启定时器4的时钟
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE);
-	
-	//配置时基单元参数
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct={0};
-	
-	TIM_TimeBaseInitStruct.TIM_Prescaler =71;//psc
-	TIM_TimeBaseInitStruct.TIM_Period =19999;//arr
-	TIM_TimeBaseInitStruct.TIM_CounterMode =TIM_CounterMode_Up;
-	TIM_TimeBaseInitStruct.TIM_RepetitionCounter =0;
-	
-	TIM_TimeBaseInit(TIM4,&TIM_TimeBaseInitStruct);
-	
-	//闭合时基单元开关
-	TIM_Cmd(TIM4,ENABLE);
-	
-	//输出比较
-	
-	//PB6 PITCH 俯仰
-	TIM_OCInitTypeDef TIM_OCInitStruct={0};
-	
-	TIM_OCInitStruct.TIM_OCMode =TIM_OCMode_PWM1 ;//选择PWM模式1
-	TIM_OCInitStruct.TIM_OCPolarity =TIM_OCPolarity_High ;//高电平有效
-	TIM_OCInitStruct.TIM_OutputState =TIM_OutputState_Enable ;//使能输出
-	TIM_OCInitStruct.TIM_Pulse =1500;//ccr
-	
-	TIM_OC1Init(TIM4,&TIM_OCInitStruct);//通道1
-	
-	TIM_OC1PreloadConfig(TIM4,TIM_OCPreload_Enable );//使能通道1预装载
-	TIM_ARRPreloadConfig(TIM4,ENABLE);//使能ARR自动重装预加载
-	
-	//PB7	YAW左右
-	
-	TIM_OCInitStruct.TIM_Pulse =1500;//ccr
-	TIM_OC2Init(TIM4,&TIM_OCInitStruct);//通道2
-	
-	TIM_OC2PreloadConfig(TIM4,TIM_OCPreload_Enable );
-	TIM_ARRPreloadConfig(TIM4,ENABLE);
-	
-	
-	TIM_Cmd(TIM4,ENABLE);
-	
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
 	
 }
 
@@ -84,9 +31,9 @@ void My_servo_Init(void)
 
 void servo_pitch(void)//俯仰
 {
-	if(servo_PitchCmd	==1)//判断
+	if(servo_PitchCmd==1)//判断
 		{
-			TIM_SetCompare1(TIM4,Pitch_Angle*2000/180+500);//计算角度占180的比例，再等比例换算成PWM时间，最后加500计数单位满足初始位 
+			_HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_1,Pitch_Angle*2000/180+500);//计算角度占180的比例，再等比例换算成PWM时间，最后加500计数单位满足初始位 
 			servo_PitchCmd=0;//重置标志位
 		}
 		
@@ -96,7 +43,7 @@ void servo_yaw(void)
 {
 	if(servo_YawCmd==1)
 		{
-			TIM_SetCompare2(TIM4,Yaw_Angle*2000/180+500); 
+			_HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_1,Yaw_Angle*2000/180+500); 
 			servo_YawCmd=0;
 		}
 		

@@ -1,4 +1,4 @@
-#include "stm32f10x.h"
+#include "main.h"
 #include "bsp_timer.h"
 
 
@@ -14,30 +14,14 @@ volatile uint32_t My_button_duration=0;//按下按钮的持续时间
 volatile uint8_t My_button_State=0;//OLED显示按键类型判断点
 
 
-//初始化PB0引脚
-void My_button_Init(void)
-{
-
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
-	
-	GPIO_InitTypeDef GPIO_InitStruct={0};
-	
-	GPIO_InitStruct.GPIO_Mode=GPIO_Mode_IPU;
-	GPIO_InitStruct.GPIO_Pin =GPIO_Pin_0;
-	
-	GPIO_Init(GPIOB,&GPIO_InitStruct);
-
-
-}
-
 
 //模式转换
 void My_button_Press(void)
 {
 
-	My_button_Current=GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0);
+	My_button_Current=HAL_GPIO_ReadPin(GPIOB,GPIO_Pin_0);
 	
-	if(My_button_Current==RESET&&My_button_Previous==SET)//判断按钮是否被按下
+	if(My_button_Current==GPIO_PIN_RESET&&My_button_Previous==GPIO_PIN_SET)//判断按钮是否被按下
 		{
 			
 			My_button_Previous=My_button_Current;//更新状态
@@ -47,7 +31,7 @@ void My_button_Press(void)
 		
 		
 		
-	if(My_button_Current==SET&&My_button_Previous==RESET)//判断按钮是否松开
+	if(My_button_Current==GPIO_PIN_SET&&My_button_Previous==GPIO_PIN_RESET)//判断按钮是否松开
 		{
 			My_button_duration=currentTick-My_buttonStartTime;//计算按按钮的持续时间
 			
