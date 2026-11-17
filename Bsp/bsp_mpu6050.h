@@ -9,7 +9,7 @@ extern float MPU_Pitch,MPU_ROLL;
 int8_t My_MPU6050_Init(void);
 uint8_t  MPU6050_REData(void);
 void MPU6050_UpdateAngle(void);
-uint8_t MPU6050_AngleCalibration(void);
+int8_t MPU6050_AngleCalibration(void);
 extern uint8_t Calibration_point;
 
 

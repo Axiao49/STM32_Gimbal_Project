@@ -197,19 +197,40 @@ void My_oled_printf(void)
 		
 	
 	//显示命令
-	if(strcmp(current_command,"PITCH")==0)
+	if(strcmp(OLED_command,"PITCH")==0)
 		{
 			OLED_SetPen (&oled,PEN_COLOR_WHITE,1);
 			OLED_SetBrush (&oled,PEN_COLOR_BLACK);
 			OLED_SetCursor (&oled,OLED_GetStrWidth (&oled,"COMMAND:")+1,44);
 			OLED_Printf(&oled,"Pitch<%d>",temp_Pitch);
 		}
-	else if(strcmp(current_command,"YAW")==0)
+	else if(strcmp(OLED_command,"YAW")==0)
 		{
 			OLED_SetPen (&oled,PEN_COLOR_WHITE,1);
 			OLED_SetBrush (&oled,PEN_COLOR_BLACK);
 			OLED_SetCursor (&oled,OLED_GetStrWidth (&oled,"COMMAND:")+1,44);
 			OLED_Printf(&oled,"Yaw<%d>",temp_Yaw);
+		}
+	else if(strcmp(OLED_command,"AT")==0)
+		{
+			OLED_SetPen (&oled,PEN_COLOR_WHITE,1);
+			OLED_SetBrush (&oled,PEN_COLOR_BLACK);
+			OLED_SetCursor (&oled,OLED_GetStrWidth (&oled,"COMMAND:")+1,44);
+			OLED_DrawString (&oled,"AT");
+		}
+	else if(strcmp(OLED_command,"STATUS")==0)
+		{
+			OLED_SetPen (&oled,PEN_COLOR_WHITE,1);
+			OLED_SetBrush (&oled,PEN_COLOR_BLACK);
+			OLED_SetCursor (&oled,OLED_GetStrWidth (&oled,"COMMAND:")+1,44);
+			OLED_DrawString (&oled,"STATUS");
+		}
+	else if(strcmp(OLED_command,"CAL")==0)
+		{
+			OLED_SetPen (&oled,PEN_COLOR_WHITE,1);
+			OLED_SetBrush (&oled,PEN_COLOR_BLACK);
+			OLED_SetCursor (&oled,OLED_GetStrWidth (&oled,"COMMAND:")+1,44);
+			OLED_DrawString (&oled,"CAL");
 		}
 	else
 		{

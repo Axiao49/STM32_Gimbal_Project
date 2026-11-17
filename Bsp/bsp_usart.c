@@ -12,6 +12,7 @@ volatile uint8_t My_USART_Buffer[33]={0};//缓冲区接收数据+ /0
 volatile uint8_t My_Buffer_Size=0;//记录读取的数据数量
 volatile uint8_t My_USART_DataREC=0;//标志位，判断是否接收完成
 char current_command[33]={0};//定义数组，准备接收指令		char command[100]={0};
+char OLED_command[33]={0};
 uint8_t DataOR_Check=0;
 int32_t temp_Pitch=90;//显示舵机运动角度
 int32_t temp_Yaw=90;		
@@ -142,12 +143,13 @@ void My_USART_Word(void)
 	if(strcmp((const char *)My_USART_Buffer,"AT")==0)//(My_USART_Buffer[0]=='A'&&My_USART_Buffer[1]=='T')
 		{
 			printf("OK\r\n");
+			strcpy(OLED_command,"AT");
 		
 		}
 		else if(strcmp((const char*)current_command,"STATUS")==0)
 			{
 				printf("OK MODE=%d\r\n",sys_Mode);
-
+				strcpy(OLED_command,"STATUS");
 			}
 		else if(strcmp((const char* )current_command,"YAW")==0||strcmp((const char*)current_command,"PITCH")==0)
 		//比较字符，判断指令		
@@ -175,21 +177,20 @@ void My_USART_Word(void)
 									{
 										temp_Yaw =angle;
 										Yaw_Angle =180-angle;//记录角度
+										strcpy(OLED_command,"YAW");
 									}
 								else
 									{
 										temp_Pitch =angle;
 										Pitch_Angle =180-angle;
+										strcpy(OLED_command,"PITCH");
 									}
 							}
 				
 					}
 		else if(strcmp((const char*)current_command,"CAL")==0)//姿态板执行零位校准判断
 			{
-				
-				
-				Calibration_point=1;//标志位置1
-				
+				Calibration_point=1;//标志位置1		
 			}
 		else
 			{

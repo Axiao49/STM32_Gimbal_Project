@@ -16,7 +16,7 @@ float MPU_Pitch,MPU_ROLL;//最终结算出的Pitch，Roll
 float Gyro_offset_X=0.0f;//陀螺仪X轴静止时的数据（偏差），即零位偏置
 float Gyro_offset_Y=0.0f;//陀螺仪Y轴静止时的数据（偏差），即零位偏置
 //接收指令
-uint8_t Calibration_point=0;//执行姿态零位校准标志位
+uint8_t Calibration_point=1;//执行姿态零位校准标志位
 
 
 
@@ -73,33 +73,39 @@ uint8_t MPU6050_REData(void)
 //
 //
 //零位校准
-uint8_t  MPU6050_AngleCalibration(void)
+int8_t  MPU6050_AngleCalibration(void)
 {
-
-	int32_t sum_gx=0;
-	int32_t sum_gy=0;
+  if(Calibration_point==1)
+	{
+		Calibration_point=0;
+    	int32_t sum_gx=0;
+		int32_t sum_gy=0;
 	
 	
-	//连续采样500次
-	for(int i=0;i<500;i++)
-		{
+		//连续采样500次
+		for(int i=0;i<500;i++)
+			{
 			MPU6050_REData();
 			sum_gx +=Gyro_X ;
 			sum_gy+=Gyro_Y ;
 			
 			HAL_Delay(2);//防止采样过快
 	
-		}
+			}
 
-	Gyro_offset_X=(float)sum_gx /500.0f;
-	Gyro_offset_Y=(float)sum_gy /500.0f;
+		Gyro_offset_X=(float)sum_gx /500.0f;
+		Gyro_offset_Y=(float)sum_gy /500.0f;
 	
 
-	//归零姿态角，定义为0度起点
-	MPU_Pitch =0;
-	MPU_ROLL =0;
+		//归零姿态角，定义为0度起点
+		MPU_Pitch =0;
+		MPU_ROLL =0;
 
-	return 0;
+	    return 0;
+	
+	}
+	
+	return -1;
 		
 }
 

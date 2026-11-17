@@ -13,7 +13,7 @@ extern char current_command[33];
 extern 	int32_t temp_Pitch;
 extern  int32_t temp_Yaw;		
 extern uint8_t rx_data;
-
+extern char OLED_command[33];
 
 
 #endif
